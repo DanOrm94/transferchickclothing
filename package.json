@@ -6,7 +6,7 @@
   "engines": { "node": ">=20" },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/copy-product-images.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "db:migrate": "wrangler d1 migrations apply DB --local",
