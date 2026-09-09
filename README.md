@@ -60,15 +60,17 @@ Create a Turnstile widget for your production hostname. Add its public site key 
 ## Cloudflare Pages
 
 1. Push this repository to GitHub and create a Cloudflare Pages project connected to `DanOrm94/transferchickclothing`.
-2. Use the Astro build command `npm run build` and output directory `dist`.
-3. Create a D1 database and update `wrangler.toml` with the database ID. Create the binding as `DB`.
-4. Create an R2 bucket named `transferchickclothing-products` and bind it as `PRODUCTS_BUCKET`.
-5. Apply the migration to the remote database: `npx wrangler d1 migrations apply DB --remote` and then seed with `npx wrangler d1 execute DB --remote --file=./scripts/seed.sql` when ready.
-6. Add Pages project secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, `TURNSTILE_SECRET_KEY`, `ADMIN_PASSWORD`.
-7. Add `PUBLIC_SITE_URL` as an environment variable using the production Pages/custom-domain URL.
-8. Upload production product images to R2 using the `product_images.r2_key` values and update the image URL helper when you expose the bucket behind your chosen image-resizing/domain route.
-9. In Stripe Dashboard, register `https://YOUR_DOMAIN/api/webhooks/stripe` and subscribe to `checkout.session.completed`.
-10. Keep test keys/webhook endpoint in Stripe test mode until checkout, webhook, email and stock decrementing have all been exercised end-to-end.
+2. Use build command `npm run build` and output directory `dist`.
+3. **Leave the Deploy command blank. Do not use `npx wrangler deploy`.** Cloudflare Pages performs the deployment itself. `wrangler deploy` is the Workers deployment command and causes the `ASSETS is reserved in Pages projects` error with the generated Astro configuration.
+4. If you have configured a Deploy command already, remove it and trigger a new deployment.
+5. Create a D1 database and update `wrangler.toml` with the database ID. Create the binding as `DB`.
+6. Create an R2 bucket named `transferchickclothing-products` and bind it as `PRODUCTS_BUCKET`.
+7. Apply the migration to the remote database: `npx wrangler d1 migrations apply DB --remote` and then seed with `npx wrangler d1 execute DB --remote --file=./scripts/seed.sql` when ready.
+8. Add Pages project secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, `TURNSTILE_SECRET_KEY`, `ADMIN_PASSWORD`.
+9. Add `PUBLIC_SITE_URL` as an environment variable using the production Pages/custom-domain URL.
+10. Upload production product images to R2 using the `product_images.r2_key` values and update the image URL helper when you expose the bucket behind your chosen image-resizing/domain route.
+11. In Stripe Dashboard, register `https://YOUR_DOMAIN/api/webhooks/stripe` and subscribe to `checkout.session.completed`.
+12. Keep test keys/webhook endpoint in Stripe test mode until checkout, webhook, email and stock decrementing have all been exercised end-to-end.
 
 Cloudflare Pages deployments are connected to GitHub by the Pages project; the repository's GitHub Actions workflow also runs `npm run check` and `npm run build` on pushes to `main` and pull requests.
 
