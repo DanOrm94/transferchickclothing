@@ -2,7 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductCard from '../components/ProductCard.astro';
 import { getProducts } from '../data/catalog';
-const products = await getProducts(Astro.locals);
+
+const allowedProductIds = new Set([1, 3, 9, 11, 14, 17, 18, 21, 23, 28, 31, 33, 34, 35, 38, 39, 40, 41, 43, 44, 46, 48]);
+const products = (await getProducts(Astro.locals)).filter((product) => allowedProductIds.has(product.id));
 const category = Astro.url.searchParams.get('category') || 'All';
 const size = Astro.url.searchParams.get('size') || 'All';
 const color = Astro.url.searchParams.get('color') || 'All';
