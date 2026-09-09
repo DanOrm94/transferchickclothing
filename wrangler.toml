@@ -5,7 +5,7 @@ pages_build_output_dir = "./dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "transferchickclothing"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "a9b12a6e-8dae-4046-a268-aa759b4117a6"
 
 [[r2_buckets]]
 binding = "PRODUCTS_BUCKET"
