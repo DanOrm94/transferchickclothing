@@ -11,23 +11,23 @@ const products = await getProducts(Astro.locals);
         <div class="pill inline-flex">Small batch • Big personality</div>
         <h1 class="mt-5 font-display text-5xl font-bold tracking-tight sm:text-6xl">Wear something<br />a little unique.</h1>
         <p class="mt-6 max-w-xl text-lg leading-8 text-neutral-600">Novelty tees built around tiny characters, odd little grids and the kind of illustrations people ask about in the queue.</p>
-        <div class="mt-8 flex flex-wrap gap-3"><a href="/shop" class="btn-primary">Shop all tees</a><a href="/shop?category=New%20Arrivals" class="btn-secondary">See new arrivals</a></div>
+        <div class="mt-8 flex flex-wrap gap-3"><a href="/shop" class="btn-primary">Shop all tees</a><a href="/shop?category=Collection" class="btn-secondary">See the collection</a></div>
       </div>
       <div class="rounded-[2rem] bg-neutral-100 p-5 shadow-soft sm:p-8">
-        <img src="/demo/hero-grid.svg" alt="Grid of quirky illustrated characters on a plain cream t-shirt" class="w-full rounded-[1.5rem] bg-white" />
+        <img src="/images/clothing (1).jpg" alt="Transferchic Clothing T-shirt design" class="w-full rounded-[1.5rem] bg-white object-cover" />
       </div>
     </div>
   </section>
 
   <section class="container-page py-12">
-    <div class="flex flex-wrap items-end justify-between gap-4"><div><div class="text-sm font-semibold uppercase tracking-wider text-neutral-400">Browse the mood</div><h2 class="mt-2 font-display text-3xl font-bold">Find your kind of strange.</h2></div><a href="/shop" class="text-sm font-semibold underline">View everything</a></div>
+    <div class="flex flex-wrap items-end justify-between gap-4"><div><div class="text-sm font-semibold uppercase tracking-wider text-neutral-400">Browse the mood</div><h2 class="mt-2 font-display text-3xl font-bold">Find your kind of unique.</h2></div><a href="/shop" class="text-sm font-semibold underline">View everything</a></div>
     <div class="mt-7 grid gap-3 sm:grid-cols-3">
-      {['Animals','New Arrivals','Best Sellers'].map((category) => <a href={`/shop?category=${encodeURIComponent(category)}`} class="rounded-2xl border border-neutral-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-black"><div class="text-sm text-neutral-500">Collection</div><div class="mt-2 font-display text-xl font-semibold">{category}</div></a>)}
+      {['Collection'].map((category) => <a href={`/shop?category=${encodeURIComponent(category)}`} class="rounded-2xl border border-neutral-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-black"><div class="text-sm text-neutral-500">Collection</div><div class="mt-2 font-display text-xl font-semibold">{category}</div></a>)}
     </div>
   </section>
 
   <section class="container-page pb-16">
-    <div class="flex items-end justify-between"><div><div class="text-sm font-semibold uppercase tracking-wider text-neutral-400">Featured</div><h2 class="mt-2 font-display text-3xl font-bold">Tiny characters. Big shirts.</h2></div><a href="/shop" class="hidden text-sm font-semibold underline sm:block">Shop all</a></div>
+    <div class="flex items-end justify-between"><div><div class="text-sm font-semibold uppercase tracking-wider text-neutral-400">Featured</div><h2 class="mt-2 font-display text-3xl font-bold">Unique designs. Big shirts.</h2></div><a href="/shop" class="hidden text-sm font-semibold underline sm:block">Shop all</a></div>
     <div class="mt-8 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">{products.slice(0,4).map((product) => <ProductCard product={product} />)}</div>
   </section>
 
