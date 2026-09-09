@@ -11,9 +11,9 @@ const filtered = products.filter((p) => (category === 'All' || p.category === ca
 const categories = ['All', ...new Set(products.map((p) => p.category))];
 const colors = ['All', ...new Set(products.flatMap((p) => p.variants.map((v) => v.color)))];
 ---
-<BaseLayout title="Shop tees — Transfer Chick">
+<BaseLayout title="Shop tees — Transferchic Clothing">
   <div class="container-page py-12">
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><div class="text-sm uppercase tracking-wider text-neutral-400">Collection</div><h1 class="mt-2 font-display text-4xl font-bold">All the odd little tees.</h1></div><div class="text-sm text-neutral-500">{filtered.length} designs</div></div>
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><div class="text-sm uppercase tracking-wider text-neutral-400">Transferchic Clothing</div><h1 class="mt-2 font-display text-4xl font-bold">All the odd little tees.</h1></div><div class="text-sm text-neutral-500">{filtered.length} designs</div></div>
     <form class="mt-8 grid gap-3 rounded-2xl border border-neutral-200 bg-white p-4 sm:grid-cols-2 lg:grid-cols-4" method="GET">
       <label class="text-sm">Category<select name="category" class="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3"><option>All</option>{categories.slice(1).map((c)=><option selected={c===category}>{c}</option>)}</select></label>
       <label class="text-sm">Size<select name="size" class="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3"><option>All</option>{['S','M','L','XL','2XL'].map((s)=><option selected={s===size}>{s}</option>)}</select></label>
