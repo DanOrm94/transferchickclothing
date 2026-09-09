@@ -4,10 +4,10 @@ type CatalogRow = { id:number; slug:string; name:string; description:string; bas
 const sizes = ['S','M','L','XL','2XL'];
 
 async function bootstrapCatalog(db: D1Database) {
-  const marker = await db.prepare("SELECT COUNT(*) AS count FROM products WHERE slug LIKE 'transfer-chick-tee-%' OR name LIKE 'Transfer Chick %'").first<{count:number}>();
-  const count = Number(marker?.count || 0);
-  if (count >= 48) return;
+  const count = await db.prepare('SELECT COUNT(*) AS count FROM products').first<{count:number}>();
+  if (Number(count?.count || 0) >= 48) return;
 
+  // Replace the original demo catalogue or a partial first-run catalogue.
   await db.batch([
     db.prepare('DELETE FROM product_images WHERE product_id BETWEEN 1 AND 48'),
     db.prepare('DELETE FROM variants WHERE product_id BETWEEN 1 AND 48'),
@@ -18,7 +18,7 @@ async function bootstrapCatalog(db: D1Database) {
   for (let n = 1; n <= 48; n++) {
     const slug = `transferchic-tee-${n}`;
     const name = `Transferchic Tee ${n}`;
-    const description = `Quirky printed Transferchic t-shirt design ${n}. A fun everyday tee from the Transferchic Clothing collection.`;
+    const description = `Quirky printed Transferchic Clothing T-shirt design ${n}. A fun everyday tee from the Transferchic collection.`;
     const category = n <= 12 ? 'New Arrivals' : n <= 24 ? 'Best Sellers' : n <= 36 ? 'Graphic Tees' : 'Collection';
     statements.push(
       db.prepare('INSERT INTO products (id, slug, name, description, base_price, category, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)').bind(n, slug, name, description, 2800, category),
