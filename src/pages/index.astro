@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { getProducts } from '../data/catalog';
+const products = await getProducts(Astro.locals);
+---
+<BaseLayout title="Transfer Chick — Quirky printed tees" description="Funny illustrated grid tees and novelty prints from Transfer Chick Clothing.">
+  <section class="border-b border-neutral-200 bg-white">
+    <div class="container-page grid gap-10 py-14 md:grid-cols-[1.05fr_.95fr] md:items-center md:py-20">
+      <div>
+        <div class="pill inline-flex">Small batch • Big personality</div>
+        <h1 class="mt-5 font-display text-5xl font-bold tracking-tight sm:text-6xl">Wear something<br />a little weird.</h1>
+        <p class="mt-6 max-w-xl text-lg leading-8 text-neutral-600">Novelty tees built around tiny characters, odd little grids and the kind of illustrations people ask about in the queue.</p>
+        <div class="mt-8 flex flex-wrap gap-3"><a href="/shop" class="btn-primary">Shop all tees</a><a href="/shop?category=New%20Arrivals" class="btn-secondary">See new arrivals</a></div>
+      </div>
+      <div class="rounded-[2rem] bg-neutral-100 p-5 shadow-soft sm:p-8">
+        <img src="/demo/hero-grid.svg" alt="Grid of quirky illustrated characters on a plain cream t-shirt" class="w-full rounded-[1.5rem] bg-white" />
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-12">
+    <div class="flex flex-wrap items-end justify-between gap-4"><div><div class="text-sm font-semibold uppercase tracking-wider text-neutral-400">Browse the mood</div><h2 class="mt-2 font-display text-3xl font-bold">Find your kind of strange.</h2></div><a href="/shop" class="text-sm font-semibold underline">View everything</a></div>
+    <div class="mt-7 grid gap-3 sm:grid-cols-3">
+      {['Animals','New Arrivals','Best Sellers'].map((category) => <a href={`/shop?category=${encodeURIComponent(category)}`} class="rounded-2xl border border-neutral-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-black"><div class="text-sm text-neutral-500">Collection</div><div class="mt-2 font-display text-xl font-semibold">{category}</div></a>)}
+    </div>
+  </section>
+
+  <section class="container-page pb-16">
+    <div class="flex items-end justify-between"><div><div class="text-sm font-semibold uppercase tracking-wider text-neutral-400">Featured</div><h2 class="mt-2 font-display text-3xl font-bold">Tiny characters. Big shirts.</h2></div><a href="/shop" class="hidden text-sm font-semibold underline sm:block">Shop all</a></div>
+    <div class="mt-8 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">{products.slice(0,4).map((product) => <ProductCard product={product} />)}</div>
+  </section>
+
+  <section class="container-page pb-16"><div class="rounded-[2rem] bg-black px-6 py-12 text-white sm:px-10"><div class="max-w-2xl"><div class="text-sm font-semibold uppercase tracking-wider text-neutral-400">The good stuff</div><h2 class="mt-3 font-display text-4xl font-bold">A plain tee is a blank canvas.</h2><p class="mt-4 leading-7 text-neutral-300">Every print is designed to look like a collection of tiny stories rather than one giant logo. Clean base. Loud illustration.</p></div></div></section>
+</BaseLayout>
