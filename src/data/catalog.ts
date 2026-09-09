@@ -2,8 +2,8 @@ import { sampleProducts, type Product } from './products';
 
 type CatalogRow = { id:number; slug:string; name:string; description:string; base_price:number; category:string; is_active:number; created_at?:string };
 const sizes = ['S','M','L','XL','2XL'];
-const excludedProducts = new Set([19, 20, 25, 26, 27]);
-const catalogueSize = 43;
+const excludedProducts = new Set([5, 6, 7, 8, 19, 20, 25, 26, 27]);
+const catalogueSize = 38;
 
 async function bootstrapCatalog(db: D1Database) {
   const count = await db.prepare('SELECT COUNT(*) AS count FROM products').first<{count:number}>();
