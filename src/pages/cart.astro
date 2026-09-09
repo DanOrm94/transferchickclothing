@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Your bag — Transfer Chick">
+  <div class="container-page py-12"><div class="max-w-3xl"><div class="text-sm uppercase tracking-wider text-neutral-400">Your bag</div><h1 class="mt-2 font-display text-4xl font-bold">Ready when you are.</h1></div>
+    <div id="cart-root" class="mt-10 grid gap-10 lg:grid-cols-[1fr_360px]"><div id="items" class="grid gap-4"></div><aside class="h-fit rounded-2xl border border-neutral-200 bg-white p-6"><div class="flex justify-between"><span class="text-neutral-600">Subtotal</span><strong id="subtotal">£0.00</strong></div><p class="mt-2 text-xs text-neutral-500">Shipping and taxes are calculated by Stripe Checkout.</p><button id="checkout" class="btn-primary mt-6 w-full">Checkout with Stripe</button><p id="error" class="mt-3 hidden text-sm text-red-600"></p></aside></div>
+  </div>
+  <script>
+    const root = document.getElementById('items'), subtotal = document.getElementById('subtotal'), checkout = document.getElementById('checkout'), error = document.getElementById('error');
+    const money = (p:number) => `£${(p/100).toFixed(2)}`;
+    const getCart = () => JSON.parse(localStorage.getItem('tcc-cart') || '[]');
+    const save = (cart:any[]) => { localStorage.setItem('tcc-cart', JSON.stringify(cart)); window.dispatchEvent(new Event('tcc-cart-updated')); render(); };
+    function render() {
+      const cart = getCart();
+      if (!root || !subtotal) return;
+      root.innerHTML = cart.length ? cart.map((item:any, index:number) => `<article class="flex gap-4 rounded-2xl border border-neutral-200 bg-white p-4"><img src="${item.imageUrl}" alt="" class="h-28 w-28 rounded-xl object-cover bg-neutral-100"><div class="min-w-0 flex-1"><div class="flex justify-between gap-3"><div><h2 class="font-semibold">${item.productName}</h2><p class="mt-1 text-sm text-neutral-500">${item.color} · ${item.size}</p></div><strong>${money(item.unitPrice * item.quantity)}</strong></div><div class="mt-5 flex items-center gap-2"><button data-action="minus" data-index="${index}" class="pill">−</button><span class="w-8 text-center text-sm">${item.quantity}</span><button data-action="plus" data-index="${index}" class="pill">+</button><button data-action="remove" data-index="${index}" class="ml-2 text-xs text-neutral-500 underline">Remove</button></div></div></article>`).join('') : `<div class="rounded-2xl border border-dashed border-neutral-300 p-12 text-center"><h2 class="font-display text-2xl font-semibold">Your bag is empty.</h2><a href="/shop" class="btn-primary mt-5">Find a tee</a></div>`;
+      subtotal.textContent = money(cart.reduce((sum:number, item:any)=>sum + item.unitPrice*item.quantity, 0));
+      document.querySelectorAll<HTMLElement>('[data-action]').forEach((button) => button.addEventListener('click', () => { const index = Number(button.dataset.index); const action = button.dataset.action; const next = getCart(); if(action==='remove') next.splice(index,1); else next[index].quantity = Math.max(1, Math.min(10, next[index].quantity + (action==='plus'?1:-1))); save(next); }));
+    }
+    checkout?.addEventListener('click', async () => { const cart = getCart(); if (!cart.length) return; checkout.setAttribute('disabled','true'); checkout.textContent='Creating secure checkout…'; error?.classList.add('hidden'); try { const response = await fetch('/api/create-checkout-session',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({items:cart.map((i:any)=>({variantId:i.variantId,quantity:i.quantity}))})}); const data=await response.json(); if(!response.ok) throw new Error(data.error || 'Unable to start checkout.'); window.location.href=data.url; } catch(e:any) { if(error){error.textContent=e.message;error.classList.remove('hidden');} checkout.removeAttribute('disabled'); checkout.textContent='Checkout with Stripe'; } });
+    render();
+  </script>
+</BaseLayout>
