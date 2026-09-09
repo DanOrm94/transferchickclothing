@@ -2,7 +2,7 @@ export type Variant = { id: number; productId: number; size: string; color: stri
 export type Product = { id: number; slug: string; name: string; description: string; basePrice: number; category: string; isActive: boolean; createdAt?: string; images: { r2Key: string; altText: string; sortOrder: number }[]; variants: Variant[] };
 
 const sizes = ['S', 'M', 'L', 'XL', '2XL'];
-const excludedProducts = new Set([19, 20, 25, 26, 27]);
+const excludedProducts = new Set([5, 6, 7, 8, 19, 20, 25, 26, 27]);
 
 // Static fallback used only if D1 is unavailable. It deliberately points at the
 // real product photos committed under src/, so the storefront never falls back
