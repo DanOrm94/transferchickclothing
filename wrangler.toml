@@ -1,0 +1,15 @@
+name = "transferchickclothing"
+compatibility_date = "2026-09-01"
+pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "transferchickclothing"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[[r2_buckets]]
+binding = "PRODUCTS_BUCKET"
+bucket_name = "transferchickclothing-products"
+
+[vars]
+PUBLIC_SITE_URL = "http://localhost:4321"
