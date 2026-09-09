@@ -1,0 +1,33 @@
+---
+---
+<header class="border-b border-neutral-200 bg-white/95 backdrop-blur sticky top-0 z-40">
+  <div class="container-page flex h-16 items-center justify-between gap-4">
+    <a href="/" class="font-display text-lg font-bold tracking-tight">Transfer Chick</a>
+    <nav class="hidden items-center gap-6 text-sm md:flex">
+      <a href="/shop" class="hover:underline">Shop</a>
+      <a href="/shop?category=Animals" class="hover:underline">Animals</a>
+      <a href="/shop?sort=new" class="hover:underline">New Arrivals</a>
+      <a href="/about" class="hover:underline">About</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href="/shop" class="btn-secondary hidden sm:inline-flex">Browse tees</a>
+      <a href="/cart" aria-label="Cart" class="relative rounded-full border border-neutral-300 p-2 hover:border-neutral-900">
+        <span aria-hidden="true">Bag</span>
+        <span id="cart-count" class="absolute -right-1 -top-1 hidden min-w-5 rounded-full bg-black px-1 text-center text-[10px] leading-5 text-white"></span>
+      </a>
+    </div>
+  </div>
+</header>
+<script>
+  const syncCount = () => {
+    const items = JSON.parse(localStorage.getItem('tcc-cart') || '[]');
+    const count = items.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+    const el = document.getElementById('cart-count');
+    if (!el) return;
+    el.textContent = String(count);
+    el.classList.toggle('hidden', count === 0);
+  };
+  syncCount();
+  window.addEventListener('storage', syncCount);
+  window.addEventListener('tcc-cart-updated', syncCount);
+</script>
