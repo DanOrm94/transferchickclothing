@@ -2,14 +2,14 @@ import { sampleProducts, type Product } from './products';
 
 type CatalogRow = { id:number; slug:string; name:string; description:string; base_price:number; category:string; is_active:number; created_at?:string };
 const sizes = ['S','M','L','XL','2XL'];
-const excludedProducts = new Set([5, 6, 7, 8, 19, 20, 25, 26, 27]);
-const catalogueSize = 38;
+const allowedProducts = new Set([1, 3, 9, 11, 14, 17, 18, 21, 23, 28, 31, 33, 34, 35, 38, 39, 40, 41, 43, 44, 46, 48]);
+const catalogueSize = allowedProducts.size;
 
 async function bootstrapCatalog(db: D1Database) {
   const count = await db.prepare('SELECT COUNT(*) AS count FROM products').first<{count:number}>();
   if (Number(count?.count || 0) === catalogueSize) return;
 
-  // Replace the original/partial catalogue with the curated real-image catalogue.
+  // Replace the original/partial catalogue with the exact curated image list.
   await db.batch([
     db.prepare('DELETE FROM product_images WHERE product_id BETWEEN 1 AND 48'),
     db.prepare('DELETE FROM variants WHERE product_id BETWEEN 1 AND 48'),
@@ -18,11 +18,11 @@ async function bootstrapCatalog(db: D1Database) {
 
   const statements: D1PreparedStatement[] = [];
   for (let n = 1; n <= 48; n++) {
-    if (excludedProducts.has(n)) continue;
+    if (!allowedProducts.has(n)) continue;
     const slug = `transferchic-tee-${n}`;
     const name = `Transferchic Tee ${n}`;
     const description = `Quirky printed Transferchic Clothing T-shirt design ${n}. A fun everyday tee from the Transferchic collection.`;
-    const category = n <= 12 ? 'New Arrivals' : n <= 24 ? 'Best Sellers' : n <= 36 ? 'Graphic Tees' : 'Collection';
+    const category = 'Collection';
     statements.push(
       db.prepare('INSERT INTO products (id, slug, name, description, base_price, category, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)').bind(n, slug, name, description, 2800, category),
       db.prepare('INSERT INTO product_images (id, product_id, r2_key, alt_text, sort_order) VALUES (?, ?, ?, ?, 0)').bind(n, n, `clothing (${n}).jpg`, `${name} product photo`),
