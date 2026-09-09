@@ -2,12 +2,14 @@ import { sampleProducts, type Product } from './products';
 
 type CatalogRow = { id:number; slug:string; name:string; description:string; base_price:number; category:string; is_active:number; created_at?:string };
 const sizes = ['S','M','L','XL','2XL'];
+const excludedProducts = new Set([19, 20, 25, 26, 27]);
+const catalogueSize = 43;
 
 async function bootstrapCatalog(db: D1Database) {
   const count = await db.prepare('SELECT COUNT(*) AS count FROM products').first<{count:number}>();
-  if (Number(count?.count || 0) >= 48) return;
+  if (Number(count?.count || 0) === catalogueSize) return;
 
-  // Replace the original demo catalogue or a partial first-run catalogue.
+  // Replace the original/partial catalogue with the curated real-image catalogue.
   await db.batch([
     db.prepare('DELETE FROM product_images WHERE product_id BETWEEN 1 AND 48'),
     db.prepare('DELETE FROM variants WHERE product_id BETWEEN 1 AND 48'),
@@ -16,6 +18,7 @@ async function bootstrapCatalog(db: D1Database) {
 
   const statements: D1PreparedStatement[] = [];
   for (let n = 1; n <= 48; n++) {
+    if (excludedProducts.has(n)) continue;
     const slug = `transferchic-tee-${n}`;
     const name = `Transferchic Tee ${n}`;
     const description = `Quirky printed Transferchic Clothing T-shirt design ${n}. A fun everyday tee from the Transferchic collection.`;
