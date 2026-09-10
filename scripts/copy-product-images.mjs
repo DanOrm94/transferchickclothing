@@ -7,7 +7,7 @@ const publicImagesDir = new URL('../public/images/', import.meta.url);
 await mkdir(publicImagesDir, { recursive: true });
 
 const files = await readdir(srcDir);
-const productImages = files.filter((file) => /^clothing \(\d+\)\.jpg$/i.test(file));
+const productImages = files.filter((file) => /^(clothing|totebags) \(\d+\)\.jpg$/i.test(file));
 
 for (const file of productImages) {
   await copyFile(join(srcDir.pathname, file), join(publicImagesDir.pathname, file));
