@@ -1,37 +1,49 @@
 import { sampleProducts, type Product } from './products';
 
 type CatalogRow = { id:number; slug:string; name:string; description:string; base_price:number; category:string; is_active:number; created_at?:string };
-const sizes = ['S','M','L','XL','2XL'];
-const allowedProducts = new Set([1, 3, 9, 11, 14, 17, 18, 21, 23, 28, 31, 33, 34, 35, 38, 39, 40, 41, 43, 44, 46, 48]);
-const catalogueSize = allowedProducts.size;
+const teeSizes = ['S','M','L','XL','2XL'];
+const allowedTees = new Set([1, 3, 9, 11, 14, 17, 18, 21, 23, 28, 31, 33, 34, 35, 38, 39, 40, 41, 43, 44, 46, 48]);
+const toteBags = Array.from({ length: 21 }, (_, index) => index + 1);
+const catalogueSize = allowedTees.size + toteBags.length;
 
 async function bootstrapCatalog(db: D1Database) {
   const count = await db.prepare('SELECT COUNT(*) AS count FROM products').first<{count:number}>();
   if (Number(count?.count || 0) === catalogueSize) return;
 
-  // Replace the original/partial catalogue with the exact curated image list.
+  // Replace the catalogue with the curated tees plus the new tote bags.
   await db.batch([
-    db.prepare('DELETE FROM product_images WHERE product_id BETWEEN 1 AND 48'),
-    db.prepare('DELETE FROM variants WHERE product_id BETWEEN 1 AND 48'),
-    db.prepare('DELETE FROM products WHERE id BETWEEN 1 AND 48'),
+    db.prepare('DELETE FROM product_images WHERE product_id BETWEEN 1 AND 999'),
+    db.prepare('DELETE FROM variants WHERE product_id BETWEEN 1 AND 999'),
+    db.prepare('DELETE FROM products WHERE id BETWEEN 1 AND 999'),
   ]);
 
   const statements: D1PreparedStatement[] = [];
-  for (let n = 1; n <= 48; n++) {
-    if (!allowedProducts.has(n)) continue;
+  for (const n of allowedTees) {
     const slug = `transferchic-tee-${n}`;
     const name = `Transferchic Tee ${n}`;
     const description = `Quirky printed Transferchic Clothing T-shirt design ${n}. A fun everyday tee from the Transferchic collection.`;
-    const category = 'Collection';
     statements.push(
-      db.prepare('INSERT INTO products (id, slug, name, description, base_price, category, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)').bind(n, slug, name, description, 2800, category),
+      db.prepare('INSERT INTO products (id, slug, name, description, base_price, category, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)').bind(n, slug, name, description, 2800, 'Collection'),
       db.prepare('INSERT INTO product_images (id, product_id, r2_key, alt_text, sort_order) VALUES (?, ?, ?, ?, 0)').bind(n, n, `clothing (${n}).jpg`, `${name} product photo`),
     );
-    sizes.forEach((size, index) => {
+    teeSizes.forEach((size, index) => {
       const variantId = n * 100 + index + 1;
       statements.push(db.prepare('INSERT INTO variants (id, product_id, size, color, sku, stock_quantity, stripe_price_id) VALUES (?, ?, ?, ?, ?, 10, NULL)').bind(variantId, n, size, 'Black', `TCC-${String(n).padStart(3,'0')}-${size}`));
     });
   }
+
+  for (const n of toteBags) {
+    const id = 100 + n;
+    const slug = `transferchic-totebag-${n}`;
+    const name = `Transferchic Tote Bag ${n}`;
+    const description = `Transferchic Clothing tote bag design ${n}. A unique everyday tote with a fun printed design.`;
+    statements.push(
+      db.prepare('INSERT INTO products (id, slug, name, description, base_price, category, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)').bind(id, slug, name, description, 450, 'Tote Bags'),
+      db.prepare('INSERT INTO product_images (id, product_id, r2_key, alt_text, sort_order) VALUES (?, ?, ?, ?, 0)').bind(id, id, `totebags (${n}).jpg`, `${name} product photo`),
+      db.prepare('INSERT INTO variants (id, product_id, size, color, sku, stock_quantity, stripe_price_id) VALUES (?, ?, ?, ?, ?, 10, NULL)').bind(10000 + n, id, 'One Size', 'Natural', `TCB-${String(n).padStart(3,'0')}`),
+    );
+  }
+
   for (let i = 0; i < statements.length; i += 50) await db.batch(statements.slice(i, i + 50));
 }
 
